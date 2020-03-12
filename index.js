@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
@@ -21,5 +22,12 @@ mongoose.connect(process.env.DB_CONNECT, {useNewUrlParser: true, useUnifiedTopol
 app.use('/api/user', authRoute)
 app.use('/api/posts', postsRoute)
 app.use('/api/categories', categoriesRoute)
+
+//CORS Middleware
+var corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 
+  }
+app.use(cors(corsOptions))
 
 app.listen(3000, () => console.log(`Server is running`))
