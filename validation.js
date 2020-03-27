@@ -19,11 +19,11 @@ const loginValidation = (data) => {
 
 const postValidation = (data) => {
     const schema = Joi.object({
-        title: Joi.string().min(6).max(255).required(),
+        title: Joi.string().min(4).max(255).required(),
         description: Joi.string().max(255),
         content: Joi.string().min(6),
         authorId: Joi.string().required(),
-        categoryId: Joi.string(),
+        categorySlug: Joi.string().required(),
         imageUrl: Joi.string().required()
     })
     return schema.validate(data)
@@ -32,6 +32,7 @@ const postValidation = (data) => {
 const categoryValidation = (data) => {
     const schema = Joi.object({
         title: Joi.string().min(3).max(255).required(),
+        color: Joi.string().required(),
         description: Joi.string().max(255)
     })
     return schema.validate(data)

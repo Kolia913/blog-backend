@@ -24,11 +24,19 @@ const findBySlug = async (req, res) => {
 }*/
 
 const findByCategory = async (req, res) => {
-    const posts = await Post.find({categoryId: req.params.categoryId})
+    const posts = await Post.find({categorySlug: req.params.categorySlug})
     if(!posts){
         return res.status(400).send('No posts in this category')
     }
     res.status(200).json(posts)
+}
+
+const findByAuthor = async (req, res) => {
+   const posts = await Post.find({authorId: req.params.authorId})
+   if(!posts){
+       return res.status(400).send(`No posts:(`)
+   }
+   res.status(200).json(posts)
 }
 
 const addPost = async (req, res) => {
@@ -51,7 +59,7 @@ const addPost = async (req, res) => {
         description: req.body.description,
         content: req.body.content,
         authorId: req.body.authorId,
-        categoryId: req.body.categoryId,
+        categorySlug: req.body.categorySlug,
         imageUrl: req.body.imageUrl
     })
     try{
@@ -85,7 +93,7 @@ const editPost = async (req, res) => {
         description: req.body.description,
         content: req.body.content,
         authorId: req.body.authorId,
-        categoryId: req.body.categoryId,
+        categorySlug: req.body.categorySlug,
         imageUrl: req.body.imageUrl,
         updated_at: Date.now()
     }
@@ -113,6 +121,7 @@ module.exports = {
     getAll,
     findBySlug,
     findByCategory,
+    findByAuthor,
     addPost,
     editPost,
     removePost

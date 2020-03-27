@@ -23,9 +23,9 @@ app.use('/api/user', authRoute)
 app.use('/api/posts', postsRoute)
 app.use('/api/categories', categoriesRoute)
 
-//CORS Middleware
+//CORS
 var corsOptions = {
-    origin: '*',
+    origin: 'http://localhost:4200',
     optionsSuccessStatus: 200 
   }
 app.use(cors(corsOptions))

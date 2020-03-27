@@ -5,7 +5,7 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        min: 6,
+        min: 4,
         max: 255
     },
     slug:{
@@ -34,8 +34,9 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    categoryId:{
+    categorySlug:{
         type: String,
+        required: true
     },
     imageUrl:{
         type: String,

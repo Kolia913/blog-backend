@@ -32,6 +32,7 @@ const addCategory = async (req, res) => {
     const category = new Category({
         title: req.body.title,
         slug: slug,
+        color: req.body.color,
         description: req.body.description
     })
 
@@ -52,13 +53,14 @@ const editCategory = async (req, res) => {
 
     const category = {
         title: req.body.title,
+        color: req.body.color,
         description: req.body.description
     }
 
     try{
       const updatedCategory = await Category.findOneAndUpdate({slug: req.params.slug}, category, {new: true})
       if(!updatedCategory){
-          return res.status(400).send(`Category not ${rqe.params.slug} not found!`)
+          return res.status(400).send(`Category not ${req.params.slug} not found!`)
       }
       res.status(200).json(updatedCategory)
     }catch(err){

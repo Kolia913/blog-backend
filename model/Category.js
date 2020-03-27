@@ -14,6 +14,10 @@ const CategorySchema = new mongoose.Schema({
         unique: true,
         max: 255
     },
+    color:{
+       type: String,
+       required: true
+    },
     description:{
        type: String,
        max: 255
