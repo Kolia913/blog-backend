@@ -9,6 +9,8 @@ const authRoute = require('./routes/auth')
 const postsRoute = require('./routes/posts')
 const categoriesRoute = require('./routes/ctegories')
 
+// Uploads folder
+app.use('/uploads', express.static('uploads'))
 dotenv.config()
 
 //Connect to DB

@@ -1,6 +1,8 @@
 const Post = require('../model/Post')
 const strToSlug = require('../slug')
+const upload = require('../controller/file-upload')
 const { postValidation } = require('../validation')
+const fs = require('fs');
 
 const getAll = async (req, res) => {
     const posts = await Post.find().exec()
@@ -14,14 +16,6 @@ const findBySlug = async (req, res) => {
     }
     res.status(200).json(post )
 }
-
-/* const findByTitle = async (req, res) => {
-    const post = await Post.findOne({title: req.params.title})
-    if(!post){
-      return res.status(400).send(`Post ${req.params.title} not found`)  
-    }
-    res.send(200).json(post)
-}*/
 
 const findByCategory = async (req, res) => {
     const posts = await Post.find({categorySlug: req.params.categorySlug})
@@ -40,6 +34,11 @@ const findByAuthor = async (req, res) => {
 }
 
 const addPost = async (req, res) => {
+    const url = req.protocol + '://' + req.get('host')
+    if(!req.file){
+        return res.status(400).send(`No image selected!`)
+    }
+    const reqFile = `${url}/uploads/${req.file.filename}`
     //Validation
     const {error} = postValidation(req.body)
     if(error){
@@ -47,7 +46,7 @@ const addPost = async (req, res) => {
     }
 
     const slug = strToSlug(req.body.title)
-    
+     
     const postSlug = await Post.findOne({slug: slug})
     if(postSlug){
         return res.status(400).send(`Post already exists!`)
@@ -60,7 +59,7 @@ const addPost = async (req, res) => {
         content: req.body.content,
         authorId: req.body.authorId,
         categorySlug: req.body.categorySlug,
-        imageUrl: req.body.imageUrl
+        image: reqFile
     })
     try{
         const savedPost = await post.save()
@@ -69,39 +68,33 @@ const addPost = async (req, res) => {
         res.status(400).send(err)
     }
 }
-
+// fix bug with empty request body
 const editPost = async (req, res) => {
-    
+    const url = req.protocol + '://' + req.get('host')
     //Validation
     const {error} = postValidation(req.body)
     if(error){
         return res.status(400).send(error.details[0].message)
     }
-
-    // Don't need to update slug
-
-    /*const slug = strToSlug(req.body.title)
-    
-    const postSlug = await Post.findOne({slug: slug})
-    if(postSlug){
-        return res.status(400).send(`Post with that title(slug) already exists!`)
-    }*/
-
-    const post = {
+    const updatedPost = await Post.findOne({slug: req.params.slug})
+    if(!updatedPost){
+        return res.status(400).send(`Post not found!`)
+    }
+    const updates = {
         title: req.body.title,
-        //slug: slug,
         description: req.body.description,
         content: req.body.content,
-        authorId: req.body.authorId,
         categorySlug: req.body.categorySlug,
-        imageUrl: req.body.imageUrl,
-        updated_at: Date.now()
+        updated_at: Date.now(),
+    }
+    if(req.file){
+        const file = updatedPost.image.replace(url+'/', '')
+        const reqFile = `${url}/uploads/${req.file.filename}`
+        updates.image = reqFile
+        fs.unlinkSync(file)
     }
     try{
-       const updatedPost = await Post.findOneAndUpdate({slug: req.params.slug}, post, {new: true})
-       if(!updatedPost){
-           return res.status(400).send(`Post not found!`)
-       }
+      await updatedPost.update(updates, {new: true})
        //console.log(updatedPost)
       res.status(200).json(updatedPost)
     }catch(err){
@@ -110,7 +103,11 @@ const editPost = async (req, res) => {
 }
 
 const removePost = async (req, res) => {
-     const removedPost = await Post.findOneAndRemove({slug: req.params.slug})
+     const url = req.protocol + '://' + req.get('host')
+     const removedPost = await Post.findOne({slug: req.params.slug})
+     const file = removedPost.image.replace(url+'/', '')
+     fs.unlinkSync(file)
+     removedPost.remove()
      if(!removedPost){
          return res.status(400).send(`Post not found!`)
      }

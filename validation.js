@@ -22,9 +22,9 @@ const postValidation = (data) => {
         title: Joi.string().min(4).max(255).required(),
         description: Joi.string().max(255),
         content: Joi.string().min(6),
-        authorId: Joi.string().required(),
+        authorId: Joi.string(),
         categorySlug: Joi.string().required(),
-        imageUrl: Joi.string().required()
+        //image: Joi.required()
     })
     return schema.validate(data)
 }
