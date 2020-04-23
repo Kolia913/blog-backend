@@ -21,6 +21,13 @@ mongoose.connect(process.env.DB_CONNECT, {useNewUrlParser: true, useUnifiedTopol
  app.use(express.json())
 
 //Route Middleware
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, auth-token");
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+  next();
+});
 app.use('/api/user', authRoute)
 app.use('/api/posts', postsRoute)
 app.use('/api/categories', categoriesRoute)
