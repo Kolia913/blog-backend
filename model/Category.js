@@ -5,14 +5,14 @@ const CategorySchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        min: 3,
-        max: 255
+        minlength: 3,
+        maxlength: 255
     },
     slug:{
         type: String,
         required: true,
         unique: true,
-        max: 255
+        maxlength: 255
     },
     color:{
        type: String,
@@ -20,7 +20,7 @@ const CategorySchema = new mongoose.Schema({
     },
     description:{
        type: String,
-       max: 255
+       maxlength: 255
     }
 })
 

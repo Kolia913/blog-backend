@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 const authRoute = require('./routes/auth')
 const postsRoute = require('./routes/posts')
 const categoriesRoute = require('./routes/ctegories')
+const commentsRoute = require('./routes/comments')
 
 // Uploads folder
 app.use('/uploads', express.static('uploads'))
@@ -21,22 +22,20 @@ mongoose.connect(process.env.DB_CONNECT, {useNewUrlParser: true, useUnifiedTopol
  app.use(express.json())
 
 //Route Middleware
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, auth-token");
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
   next();
 });
+
 app.use('/api/user', authRoute)
 app.use('/api/posts', postsRoute)
 app.use('/api/categories', categoriesRoute)
+app.use('/api/comments', commentsRoute)
 
 //CORS
-var corsOptions = {
-    origin: 'http://localhost:4200',
-    optionsSuccessStatus: 200 
-  }
-app.use(cors(corsOptions))
+
+app.use(cors())
 
 app.listen(3000, () => console.log(`Server is running`))

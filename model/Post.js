@@ -5,22 +5,22 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        min: 4,
-        max: 255
+        minlength: 4,
+        maxlength: 255
     },
     slug:{
         type: String,
         required: true,
         unique: true,
-        max: 255
+        maxlength: 255
     },
     description:{
        type: String,
-       max: 255
+       maxlength: 255
     },
     content:{
         type: String,
-        min: 6
+        minlength: 6
     },
     created_at:{
        type: Date,

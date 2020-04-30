@@ -18,9 +18,7 @@ const findBySlug = async (req, res) => {
 };
 
 const addCategory = async (req, res) => {
-  const {
-    error,
-  } = categoryValidation(req.body);
+  const {error} = categoryValidation(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
